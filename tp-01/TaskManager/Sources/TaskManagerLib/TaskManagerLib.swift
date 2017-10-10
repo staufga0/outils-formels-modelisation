@@ -37,15 +37,16 @@ public func createTaskManager() -> PTNet {
 
 public func createCorrectTaskManager() -> PTNet {
     // Places
-    let taskPool    = PTPlace(named: "taskPool")
+       let taskPool    = PTPlace(named: "taskPool")
     let processPool = PTPlace(named: "processPool")
     let inProgress  = PTPlace(named: "inProgress")
+    let availableTask = PTPlace(named: "availableTask") // Je créée une nouvelle place qui contient le nombre de tâches pas encore gérées par un processus
 
     // Transitions
     let create      = PTTransition(
         named          : "create",
         preconditions  : [],
-        postconditions : [PTArc(place: taskPool)])
+        postconditions : [PTArc(place: taskPool), PTArc(place: availableTask]) // Quand une nouvelle tâche est créée, le nombre de tâches disponible augmente
     let spawn       = PTTransition(
         named          : "spawn",
         preconditions  : [],
@@ -53,18 +54,18 @@ public func createCorrectTaskManager() -> PTNet {
     let success     = PTTransition(
         named          : "success",
         preconditions  : [PTArc(place: taskPool), PTArc(place: inProgress)],
-        postconditions : [])
+        postconditions : [])                //en cas de succès le nombre de tâches disponible ne change pas
     let exec       = PTTransition(
         named          : "exec",
-        preconditions  : [PTArc(place: taskPool), PTArc(place: processPool)],
+        preconditions  : [PTArc(place: taskPool), PTArc(place: processPool)) PTArc(place: availableTask)], // pour démarrer un processus il faut qu'il y aie une tâche disponible
         postconditions : [PTArc(place: taskPool), PTArc(place: inProgress)])
     let fail        = PTTransition(
         named          : "fail",
         preconditions  : [PTArc(place: inProgress)],
-        postconditions : [])
+        postconditions : [PTArc(place: availableTask)])     // si un processus échoue, la tâche est de nouveau disponible, donc le nombre augmente de 1
 
     // P/T-net
     return PTNet(
-        places: [taskPool, processPool, inProgress],
+        places: [taskPool, processPool, inProgress, availableTask],
         transitions: [create, spawn, success, exec, fail])
 }
