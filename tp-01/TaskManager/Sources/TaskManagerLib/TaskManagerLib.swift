@@ -46,7 +46,7 @@ public func createCorrectTaskManager() -> PTNet {
     let create      = PTTransition(
         named          : "create",
         preconditions  : [],
-        postconditions : [PTArc(place: taskPool), PTArc(place: availableTask]) // Quand une nouvelle tâche est créée, le nombre de tâches disponible augmente
+        postconditions : [PTArc(place: taskPool), PTArc(place: availableTask)]) // Quand une nouvelle tâche est créée, le nombre de tâches disponible augmente
     let spawn       = PTTransition(
         named          : "spawn",
         preconditions  : [],
@@ -57,7 +57,7 @@ public func createCorrectTaskManager() -> PTNet {
         postconditions : [])                //en cas de succès le nombre de tâches disponible ne change pas
     let exec       = PTTransition(
         named          : "exec",
-        preconditions  : [PTArc(place: taskPool), PTArc(place: processPool)) PTArc(place: availableTask)], // pour démarrer un processus il faut qu'il y aie une tâche disponible
+        preconditions  : [PTArc(place: taskPool), PTArc(place: processPool), PTArc(place: availableTask)], // pour démarrer un processus il faut qu'il y aie une tâche disponible
         postconditions : [PTArc(place: taskPool), PTArc(place: inProgress)])
     let fail        = PTTransition(
         named          : "fail",
