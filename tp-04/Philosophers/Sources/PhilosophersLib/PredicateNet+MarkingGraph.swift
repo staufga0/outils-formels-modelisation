@@ -44,9 +44,10 @@ extension PredicateNet {
               }
             }
         }
-        for n in done{
+        /*for n in done{
           print(n.marking)
-        }
+        }*/
+
         return node
 
         //return nil
@@ -121,7 +122,7 @@ public class PredicateMarkingNode<T: Equatable>: Sequence {
         var result = 0
         for _ in self {
             result += 1
-            print(self.marking)
+            //print(self.marking)
         }
         return result
     }
