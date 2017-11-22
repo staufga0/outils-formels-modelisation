@@ -12,8 +12,44 @@ extension PredicateNet {
         //
         // You may use these methods to check if you've already visited a marking, or if the model
         // is unbounded.
+        var node = PredicateMarkingNode<T>(marking : marking)
+        var toBuild = [node]
+        var done = [PredicateMarkingNode<T>]()
 
-        return nil
+
+
+        while let current = toBuild.popLast(){
+            done.append(current)
+            for t in self.transitions {
+              for b in t.fireableBingings(from : current.marking){
+                if let m = t.fire(from: current.marking, with: b){
+                  if done.contains(where: {PredicateNet.greater(m, $0.marking)}) /*|| toBuild.contains(where: {PredicateNet.greater(m, $0.marking})*/ {
+                    print("Unbounded model")
+                    return nil
+                  }
+                  var bind_map :  PredicateBindingMap<T>
+                  if toBuild.contains(where: {PredicateNet.equals($0.marking, m)}) {
+                    bind_map =  PredicateBindingMap<T>(dictionaryLiteral: (b, toBuild.first(where: {PredicateNet.equals($0.marking, m)})!))
+                    current.successors.updateValue(bind_map, forKey : t)
+                  } else if done.contains(where: {PredicateNet.equals($0.marking, m)}) {
+                    bind_map =  PredicateBindingMap<T>(dictionaryLiteral: (b, done.first(where: {PredicateNet.equals($0.marking, m)})!))
+                    current.successors.updateValue(bind_map, forKey : t)
+                  } else {
+                    var newNode = PredicateMarkingNode<T>(marking : m)
+                    bind_map =  PredicateBindingMap<T>(dictionaryLiteral: (b, newNode))
+                    current.successors.updateValue(bind_map, forKey : t)
+                    toBuild.append(newNode)
+                  }
+                }
+              }
+            }
+        }
+        for n in done{
+          print(n.marking)
+        }
+        return node
+
+        //return nil
     }
 
     // MARK: Internals
@@ -85,6 +121,7 @@ public class PredicateMarkingNode<T: Equatable>: Sequence {
         var result = 0
         for _ in self {
             result += 1
+            print(self.marking)
         }
         return result
     }

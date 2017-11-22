@@ -44,9 +44,11 @@ do {
 print()
 
 do {
-    let philosophers = lockFreePhilosophers(n: 3)
+    let philosophers = lockFreePhilosophers(n: 5)
     // let philosophers = lockablePhilosophers(n: 3)
-    for m in philosophers.simulation(from: philosophers.initialMarking!).prefix(10) {
+    /*for m in philosophers.simulation(from: philosophers.initialMarking!).prefix(10) {
         print(m)
-    }
+    }*/
+    //philosophers.markingGraph(from: philosophers.initialMarking!)
+    print(philosophers.markingGraph(from: philosophers.initialMarking!)!.count)
 }
