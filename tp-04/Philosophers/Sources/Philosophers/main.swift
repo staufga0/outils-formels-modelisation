@@ -49,20 +49,21 @@ do {
     print ("\(mlf5) marquages possibles dans le modèle des philosophes non bloquable à 5 philosophes")
 
      let lphilosophers = lockablePhilosophers(n: 5)
-     let ml5 = lphilosophers.markingGraph(from: lphilosophers.initialMarking!)!.count
+     let lphilograph = lphilosophers.markingGraph(from: lphilosophers.initialMarking!)
+     let ml5 = lphilograph!.count
      print ("\(ml5) marquages possibles dans le modèle des philosophes bloquable à 5 philosophes")
 
-     /*for n in lphilosophers{
+     for n in lphilograph!{
        var lock = 1
        for t in lphilosophers.transitions{
-         for b in t.fireableBingings(from : n.marking){
+         for _ in t.fireableBingings(from : n.marking){
            lock = 0
          }
        }
        if lock == 1 {
-         print("le réseau et bloqué pour le marquage suivant : \(n)")
+         print("le réseau et bloqué pour le marquage suivant : \(n.marking)")
        }
-     }*/
+     }
 
     /*for m in philosophers.simulation(from: philosophers.initialMarking!).prefix(10) {
         print(m)

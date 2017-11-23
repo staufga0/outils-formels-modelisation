@@ -12,7 +12,7 @@ extension PredicateNet {
         //
         // You may use these methods to check if you've already visited a marking, or if the model
         // is unbounded.
-        var node = PredicateMarkingNode<T>(marking : marking)
+        let node = PredicateMarkingNode<T>(marking : marking, successors: [:])
         var toBuild = [node]
         var done = [PredicateMarkingNode<T>]()
 
@@ -21,23 +21,28 @@ extension PredicateNet {
         while let current = toBuild.popLast(){
             done.append(current)
             for t in self.transitions {
+              current.successors[t] = [:]
               for b in t.fireableBingings(from : current.marking){
                 if let m = t.fire(from: current.marking, with: b){
                   if done.contains(where: {PredicateNet.greater(m, $0.marking)}) /*|| toBuild.contains(where: {PredicateNet.greater(m, $0.marking})*/ {
                     print("Unbounded model")
                     return nil
                   }
-                  var bind_map :  PredicateBindingMap<T>
+                  //var bind_map :  PredicateBindingMap<T>
                   if toBuild.contains(where: {PredicateNet.equals($0.marking, m)}) {
-                    bind_map =  PredicateBindingMap<T>(dictionaryLiteral: (b, toBuild.first(where: {PredicateNet.equals($0.marking, m)})!))
-                    current.successors.updateValue(bind_map, forKey : t)
+                    //bind_map =  PredicateBindingMap<T>(dictionaryLiteral: (b, toBuild.first(where: {PredicateNet.equals($0.marking, m)})!))
+                    //current.successors.updateValue(bind_map, forKey : t)
+                    current.successors[t]![b] = toBuild.first(where: {PredicateNet.equals($0.marking, m)})!
+                    //current.successors.updateValue(bind_map, forKey : t)
                   } else if done.contains(where: {PredicateNet.equals($0.marking, m)}) {
-                    bind_map =  PredicateBindingMap<T>(dictionaryLiteral: (b, done.first(where: {PredicateNet.equals($0.marking, m)})!))
-                    current.successors.updateValue(bind_map, forKey : t)
+                    //bind_map =  PredicateBindingMap<T>(dictionaryLiteral: (b, done.first(where: {PredicateNet.equals($0.marking, m)})!))
+                    //current.successors.updateValue(bind_map, forKey : t)
+                    current.successors[t]![b] = done.first(where: {PredicateNet.equals($0.marking, m)})!
                   } else {
-                    var newNode = PredicateMarkingNode<T>(marking : m)
-                    bind_map =  PredicateBindingMap<T>(dictionaryLiteral: (b, newNode))
-                    current.successors.updateValue(bind_map, forKey : t)
+                    let newNode = PredicateMarkingNode<T>(marking : m, successors: [:])
+                    current.successors[t]![b] = newNode
+                    //bind_map =  PredicateBindingMap<T>(dictionaryLiteral: (b, newNode))
+                    //current.successors.updateValue(bind_map, forKey : t)
                     toBuild.append(newNode)
                   }
                 }
