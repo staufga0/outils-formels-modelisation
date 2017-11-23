@@ -28,30 +28,19 @@ extension PredicateNet {
                     print("Unbounded model")
                     return nil
                   }
-                  //var bind_map :  PredicateBindingMap<T>
                   if toBuild.contains(where: {PredicateNet.equals($0.marking, m)}) {
-                    //bind_map =  PredicateBindingMap<T>(dictionaryLiteral: (b, toBuild.first(where: {PredicateNet.equals($0.marking, m)})!))
-                    //current.successors.updateValue(bind_map, forKey : t)
                     current.successors[t]![b] = toBuild.first(where: {PredicateNet.equals($0.marking, m)})!
-                    //current.successors.updateValue(bind_map, forKey : t)
                   } else if done.contains(where: {PredicateNet.equals($0.marking, m)}) {
-                    //bind_map =  PredicateBindingMap<T>(dictionaryLiteral: (b, done.first(where: {PredicateNet.equals($0.marking, m)})!))
-                    //current.successors.updateValue(bind_map, forKey : t)
                     current.successors[t]![b] = done.first(where: {PredicateNet.equals($0.marking, m)})!
                   } else {
                     let newNode = PredicateMarkingNode<T>(marking : m, successors: [:])
                     current.successors[t]![b] = newNode
-                    //bind_map =  PredicateBindingMap<T>(dictionaryLiteral: (b, newNode))
-                    //current.successors.updateValue(bind_map, forKey : t)
                     toBuild.append(newNode)
                   }
                 }
               }
             }
         }
-        /*for n in done{
-          print(n.marking)
-        }*/
 
         return node
 
