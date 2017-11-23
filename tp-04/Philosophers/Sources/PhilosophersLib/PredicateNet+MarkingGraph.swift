@@ -24,7 +24,7 @@ extension PredicateNet {
               current.successors[t] = [:]
               for b in t.fireableBingings(from : current.marking){
                 if let m = t.fire(from: current.marking, with: b){
-                  if done.contains(where: {PredicateNet.greater(m, $0.marking)}) /*|| toBuild.contains(where: {PredicateNet.greater(m, $0.marking})*/ {
+                  if done.contains(where: {PredicateNet.greater(m, $0.marking)}) || toBuild.contains(where: {PredicateNet.greater(m, $0.marking)}) {
                     print("Unbounded model")
                     return nil
                   }
