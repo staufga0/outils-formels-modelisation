@@ -54,7 +54,10 @@ extension PredicateNet {
         for (place, tokens) in lhs {
             guard tokens.count == rhs[place]!.count else { return false }
             for t in tokens {
-                guard rhs[place]!.contains(t) else { return false }
+                guard tokens.filter({ $0 == t }).count == rhs[place]!.filter({ $0 == t }).count
+                    else {
+                        return false
+                }
             }
         }
         return true
@@ -68,7 +71,10 @@ extension PredicateNet {
             guard tokens.count >= rhs[place]!.count else { return false }
             hasGreater = hasGreater || (tokens.count > rhs[place]!.count)
             for t in rhs[place]! {
-                guard tokens.contains(t) else { return false }
+                guard tokens.filter({ $0 == t }).count >= rhs[place]!.filter({ $0 == t }).count
+                    else {
+                        return false
+                }
             }
         }
         return hasGreater
